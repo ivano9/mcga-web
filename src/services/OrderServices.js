@@ -18,8 +18,21 @@ export const createOrdersServices = () => {
         })
     }
 
+    const createOrder = (order) => {
+        const url = `${baseServices._api}/orders`
+        return FetchTokenInstance(baseServices.newRequestPost(url, order)).then(async res => {
+            const data = await res.json()
+            if (!data.code)
+                return
+            else throw baseServices.handleError(res)
+        }).catch(err => {
+            throw baseServices.handleError(err)
+        })
+    }
+
     return {
         ...baseServices,
         getOrdersList,
+        createOerder
     }
 }
