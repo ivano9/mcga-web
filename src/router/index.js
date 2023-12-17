@@ -16,6 +16,12 @@ const router = createRouter({
       meta: { guest: true }
     },
     {
+      path: '/dashboard',
+      name: 'dashboardLoggedin',
+      component: () => import('@/views/DashboardView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "not-found",
       component: () => import("@/views/NotFoundView.vue"),
