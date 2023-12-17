@@ -23,6 +23,9 @@ const logout = () => {
         <div class="flex-none">
             <div class="dropdown dropdown-end" v-if="authServices.isAdmin() && authServices.loggedIn()">
                 <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img src="@/assets/images/avatar.png" />
+                    </div>
                 </label>
                 <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                     <li>

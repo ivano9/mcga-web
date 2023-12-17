@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createAuthServices } from '@/services';
+import BaseAlert from './BaseAlert.vue';
 
 const router = useRouter()
 const authServices = createAuthServices()
@@ -31,6 +32,7 @@ const login = async () => {
 </script>
 
 <template>
+    <BaseAlert v-if="error.message" :message="error.message" />
     <div class="col-start-2 card w-96 bg-base-100 shadow-xl image-full">
         <figure><img src="@/assets/images/Untitled.jpeg" alt="Log in our orders" /></figure>
         <div class="card-body mt-5">
