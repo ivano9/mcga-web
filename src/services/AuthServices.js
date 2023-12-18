@@ -4,7 +4,7 @@ export const createAuthServices = () => {
     const baseServices = createBaseServices()
 
     const login = ({ email, password }) => {
-        const url = `${baseServices._api}v1.0/login`
+        const url = `${baseServices._api}/login`
         return fetch(baseServices.newRequestPost(url, { username: email, password })).then(async res => {
             const data = await res.json()
             if (!data.code) {
@@ -45,7 +45,7 @@ export const createAuthServices = () => {
         return baseServices.getItemFromStorage('scope') === 'admin'
     }
 
-    return { 
+    return {
         ...baseServices,
         login,
         loginWriteStorage,

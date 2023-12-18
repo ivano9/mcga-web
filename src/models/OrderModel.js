@@ -26,9 +26,30 @@ export const createOrderModel = ({
         updatedAt
     }
 
+    const prepareToSaveOrder = (dataForm) => {
+      const {
+        address,
+        deliverer,
+        state,
+        customerName,
+        customerPhone,
+        deliverType,
+        amount
+      } = dataForm
+
+      return {
+          address,
+          deliverer,
+          state,
+          customerName,
+          customerPhone,
+          deliverType,
+          amount
+      }
+    }
+
     const prepareToUpdateOrder = (dataForm) => {
         const objectUpdateOrder = {}
-
         Object.keys(dataForm).forEach(key => {
             if (JSON.stringify(orderModel[key]) !== JSON.stringify(dataForm[key])) {
                 objectUpdateOrder[key] = dataForm[key]
@@ -39,6 +60,7 @@ export const createOrderModel = ({
 
     return {
         ...orderModel,
-        prepareToUpdateOrder
+        prepareToUpdateOrder,
+        prepareToSaveOrder
     }
 }

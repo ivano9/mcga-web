@@ -1,13 +1,17 @@
 <script setup>
 import { ref } from 'vue'
 import { createOrdersServices } from '@/services'
+import { createAuthServices } from '../services';
 import { formatDateFilter } from '@/utils'
+import BaseCreateEditOrder from './BaseCreateEditOrder.vue';
 import BaseAlert from './BaseAlert.vue';
 
 
 const orders = ref([])
 const loadingOrders = ref(false)
+const data = ref({})
 const error = ref({ message: '' })
+const authServices = createAuthServices()
 const ordersServices = createOrdersServices()
 
 const headers = [
@@ -18,6 +22,7 @@ const headers = [
   { title: 'Deliverer' },
   { title: 'Delivery Date' },
   { title: 'State' },
+  { ...(!(authServices.isAdmin() && authServices.loggedIn()) || { title: 'Action' }) },
 ]
 
 const loadOrders = async () => {
@@ -31,6 +36,29 @@ const loadOrders = async () => {
   }
 }
 
+const showOrder = (id) => {
+  data.value = orders.value.find(order => order._id === id)
+  document.getElementById('create_oreder').showModal()
+}
+
+const removeOrder = async (id) => {
+  loadOrders.value = true
+  try {
+    await ordersServices.deleteOrder(id)
+  } catch (e) {
+    console.log(e)
+    error.value.message = e
+  } finally {
+    loadOrders.value = false
+    loadOrders()
+  }
+}
+
+const openModal = () =>{
+  if (document) {
+    (document.getElementById('remove_order')).showModal();
+  }
+}
 
 loadOrders()
 </script>
@@ -38,6 +66,9 @@ loadOrders()
 <template>
   <div class="card bg-base-100 shadow-xl">
     <div class="card-body">
+      <div class="card-actions justify-end">
+        <BaseCreateEditOrder @upload-orders="() => loadOrders()" :dataForm="data" />
+      </div>
       <BaseAlert v-if="error.message" :message="error.message" />
       <div class="overflow-x-auto">
         <table class="table table-zebra">
@@ -61,6 +92,30 @@ loadOrders()
                 <td>{{ order.deliverer }}</td>
                 <td>{{ formatDateFilter(order.deliveryDateTime) }}</td>
                 <td>{{ order.state }}</td>
+                <td v-if="authServices.isAdmin() && authServices.loggedIn()">
+                  <button @click="showOrder(order._id)" class="btn btn-square btn-ghost btn-sm">
+                    <ion-icon name="eye-outline"></ion-icon>
+                  </button>
+                  <button
+                    class="btn btn-square btn-ghost btn-sm"
+                    @click="openModal()"
+                    >
+                    <ion-icon name="trash-outline"></ion-icon>
+                  </button>
+                  <dialog id="remove_order" class="modal">
+                    <div class="modal-box">
+                      <h3 class="font-bold text-lg"><ion-icon name="warning-outline"></ion-icon> Waring!</h3>
+                      <p class="py-4">Are you sure to delete order?</p>
+                      <div class="modal-action">
+                        <form method="dialog">
+                          <!-- if there is a button in form, it will close the modal -->
+                          <button class="btn btn-ghost">Deny</button>
+                          <button class="btn btn-ghost" @click="removeOrder(order._id)">Continue</button>
+                        </form>
+                      </div>
+                    </div>
+                  </dialog>
+                </td>
               </tr>
             </template>
             <tr v-if="loadingOrders">
