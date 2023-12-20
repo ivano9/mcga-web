@@ -39,7 +39,7 @@ const saveOrder = async () => {
 
         form.value = createOrderModel({})
     } catch (e) {
-        error.value.message = e
+        error.value.message = e.message
     } finally {
         loadingButton.value = false
         isEditModal.value = false
