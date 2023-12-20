@@ -9,8 +9,8 @@ import BaseAlert from './BaseAlert.vue';
 const router = useRouter()
 const authServices = createAuthServices()
 const loadingButton = ref(false)
-const error = ref({ message: '' })
 const authStore = useAuth()
+const alertComponent = ref()
 
 const formLogin = ref({
     email: '',
@@ -27,10 +27,11 @@ const login = async () => {
             authStore.expires = res.expires_in
             return router.push({ name: 'dashboard' })
         }
-        else
-            error.value.message = res.message
+        else {
+          alertComponent.value.showAlertWithMessage(res.message)
+        }
     } catch (e) {
-        error.value.message = e.message
+        alertComponent.value.showAlertWithMessage(e.message)
     } finally {
         loadingButton.value = false
     }
@@ -39,7 +40,7 @@ const login = async () => {
 </script>
 
 <template>
-    <BaseAlert v-if="error.message" :message="error.message" />
+    <BaseAlert ref="alertComponent" />
     <div class="col-start-2 card w-96 bg-base-100 shadow-xl image-full">
         <figure><img src="@/assets/images/Untitled.jpeg" alt="Log in our orders" /></figure>
         <div class="card-body mt-5">

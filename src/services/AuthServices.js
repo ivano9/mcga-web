@@ -11,7 +11,7 @@ export const createAuthServices = () => {
                 loginWriteStorage(data)
                 return { ...data }
             }
-                throw baseServices.handleError(res)
+            throw baseServices.handleError(data)
         }).catch(err => {
             throw baseServices.handleError(err)
         })

@@ -12,7 +12,7 @@ export const createOrdersServices = () => {
                 const orders = data.data.map(data => createOrderModel(data))
                 return orders
             } else
-                throw baseServices.handleError(res)
+                throw baseServices.handleError(data)
         }).catch(err => {
             throw baseServices.handleError(err)
         })
@@ -34,7 +34,7 @@ export const createOrdersServices = () => {
         return FetchTokenInstance(baseServices.newRequestPatch(url, order)).then(async res => {
             const data = await res.json()
             if (!data.code) return
-            else throw baseServices.handleError(res)
+            else throw baseServices.handleError(data)
         }).catch(err => {
             throw baseServices.handleError(err)
         })
@@ -42,11 +42,7 @@ export const createOrdersServices = () => {
 
     const deleteOrder = (id) => {
         const url = `${baseServices._api}/orders/${id}`
-        return FetchTokenInstance(baseServices.newRequestDelete(url)).then(async res =>{
-          const data = await res.json()
-          if (!data.code) return
-          else throw baseServices.handleError(res)
-        })
+        return FetchTokenInstance(baseServices.newRequestDelete(url))
           .catch(err => {
             throw baseServices.handleError(err)
           })

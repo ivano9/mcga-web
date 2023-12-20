@@ -10,12 +10,13 @@ import BaseAlert from './BaseAlert.vue';
 const orders = ref([])
 const loadingOrders = ref(false)
 const data = ref({})
-const error = ref({ message: '' })
+const alertComponent = ref()
 const authServices = createAuthServices()
 const ordersServices = createOrdersServices()
 
 const headers = [
   { title: 'Customer Name' },
+  { title: 'Address'},
   { title: 'Amout' },
   { title: 'Customer Phone' },
   { title: 'Delivery Type' },
@@ -30,7 +31,7 @@ const loadOrders = async () => {
   try {
     orders.value = await ordersServices.getOrdersList()
   } catch (e) {
-    error.value.message = e.message
+    alertComponent.value.showAlertWithMessage(e.message)
   } finally {
     loadingOrders.value = false
   }
@@ -46,7 +47,7 @@ const removeOrder = async (id) => {
   try {
     await ordersServices.deleteOrder(id)
   } catch (e) {
-    error.value.message = e.message
+    alertComponent.value.showAlertWithMessage(e.message)
   } finally {
     loadOrders.value = false
     loadOrders()
@@ -68,7 +69,7 @@ loadOrders()
       <div class="card-actions justify-end">
         <BaseCreateEditOrder @upload-orders="() => loadOrders()" :dataForm="data" />
       </div>
-      <BaseAlert v-if="error.message" :message="error.message" />
+      <BaseAlert ref="alertComponent" />
       <div class="overflow-x-auto">
         <table class="table table-zebra">
           <!-- head -->
@@ -85,6 +86,7 @@ loadOrders()
               <tr v-if="orders && !loadingOrders">
                 <th>{{ idx + 1 }}</th>
                 <td>{{ order.customerName }}</td>
+                <td>{{ order.address }}</td>
                 <td>{{ order.amount }}</td>
                 <td>{{ order.customerPhone }}</td>
                 <td>{{ order.deliverType }}</td>
