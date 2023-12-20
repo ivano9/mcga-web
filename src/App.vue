@@ -5,7 +5,7 @@ import BaseNavbar from './components/BaseNavbar.vue'
 </script>
 
 <template>
-  <BaseNavbar />
+  <BaseNavbar/>
   <RouterView />
 </template>
 

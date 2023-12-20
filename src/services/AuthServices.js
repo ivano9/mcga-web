@@ -9,8 +9,8 @@ export const createAuthServices = () => {
             const data = await res.json()
             if (!data.code) {
                 loginWriteStorage(data)
-                return { success: true }
-            } else
+                return { ...data }
+            }
                 throw baseServices.handleError(res)
         }).catch(err => {
             throw baseServices.handleError(err)

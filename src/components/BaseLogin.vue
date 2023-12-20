@@ -2,12 +2,15 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { createAuthServices } from '@/services';
+import { useAuth } from "@/stores/auth.js";
 import BaseAlert from './BaseAlert.vue';
+
 
 const router = useRouter()
 const authServices = createAuthServices()
 const loadingButton = ref(false)
 const error = ref({ message: '' })
+const authStore = useAuth()
 
 const formLogin = ref({
     email: '',
@@ -18,8 +21,12 @@ const login = async () => {
     loadingButton.value = true
     try {
         const res = await authServices.login(formLogin.value)
-        if (res.success)
+        if (res.access_token) {
+            authStore.scope = res.scope
+            authStore.token = res.access_token
+            authStore.expires = res.expires_in
             return router.push({ name: 'dashboard' })
+        }
         else
             error.value.message = res
     } catch (e) {
