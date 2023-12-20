@@ -6,7 +6,7 @@ import BaseAlert from './BaseAlert.vue';
 
 const loadingButton = ref(false)
 const isEditModal = ref(false)
-const error = ref({ message: '' })
+const alertComponent = ref()
 const authServices = createAuthServices()
 const ordersServices = createOrdersServices()
 
@@ -36,10 +36,9 @@ const saveOrder = async () => {
         else
             await
               ordersServices.createOrder(newOrder.prepareToSaveOrder(form.value))
-
         form.value = createOrderModel({})
     } catch (e) {
-        error.value.message = e.message
+      alertComponent.value.showAlertWithMessage(e.message)
     } finally {
         loadingButton.value = false
         isEditModal.value = false
@@ -53,10 +52,22 @@ const resetValuesForNewOrder = () => {
     isEditModal.value = true
 }
 
+const requiredFields =() => {
+  const {
+    address,
+    deliverer,
+    state,
+    customerName,
+    customerPhone,
+    deliverType,
+    amount} = form.value
+  return  address &&  deliverer && state && customerName && customerPhone &&  deliverType && amount
+}
+
 </script>
 
 <template>
-    <BaseAlert v-if="error.message" :message="error.message" />
+    <BaseAlert ref="alertComponent" />
     <button class="btn btn-ghost" onclick="create_oreder.showModal()" @click="resetValuesForNewOrder"
         v-if="authServices.isAdmin() && authServices.loggedIn()">New Order</button>
     <dialog id="create_oreder" class="modal">
@@ -148,7 +159,7 @@ const resetValuesForNewOrder = () => {
                 </div>
             </div>
             <div class="modal-action" v-if="isEditModal">
-                <div><button class="btn btn-ghost" @click="saveOrder" :disabled="loadingButton"> <span v-if="loadingButton"
+                <div><button class="btn btn-ghost" @click="saveOrder" :disabled="loadingButton || !requiredFields() "> <span v-if="loadingButton"
                             class="loading loading-spinner"></span> Save</button></div>
             </div>
         </div>
