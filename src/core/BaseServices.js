@@ -48,7 +48,8 @@ export const createBaseServices = () => {
     const handleError = (error) => {
         const res = createGeneralResponse({})
         res.data = []
-        res.error = true
+        if (error.code)
+          res.error = true
 
         if (error.message) {
             res.message = error.message

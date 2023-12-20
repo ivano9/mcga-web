@@ -22,8 +22,7 @@ export const createOrdersServices = () => {
         const url = `${baseServices._api}/orders`
         return FetchTokenInstance(baseServices.newRequestPost(url, order)).then(async res => {
             const data = await res.json()
-            if (!data.error)
-                return
+            if (!data.code) return
             else throw baseServices.handleError(data)
         }).catch(err => {
             throw baseServices.handleError(err)
@@ -34,8 +33,7 @@ export const createOrdersServices = () => {
         const url = `${baseServices._api}/orders/${id}`
         return FetchTokenInstance(baseServices.newRequestPatch(url, order)).then(async res => {
             const data = await res.json()
-            if (!data.code)
-                return
+            if (!data.code) return
             else throw baseServices.handleError(res)
         }).catch(err => {
             throw baseServices.handleError(err)
@@ -44,7 +42,11 @@ export const createOrdersServices = () => {
 
     const deleteOrder = (id) => {
         const url = `${baseServices._api}/orders/${id}`
-        return FetchTokenInstance(baseServices.newRequestDelete(url))
+        return FetchTokenInstance(baseServices.newRequestDelete(url)).then(async res =>{
+          const data = await res.json()
+          if (!data.code) return
+          else throw baseServices.handleError(res)
+        })
           .catch(err => {
             throw baseServices.handleError(err)
           })

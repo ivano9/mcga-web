@@ -30,7 +30,7 @@ const loadOrders = async () => {
   try {
     orders.value = await ordersServices.getOrdersList()
   } catch (e) {
-    error.value.message = e
+    error.value.message = e.message
   } finally {
     loadingOrders.value = false
   }
@@ -46,8 +46,7 @@ const removeOrder = async (id) => {
   try {
     await ordersServices.deleteOrder(id)
   } catch (e) {
-    console.log(e)
-    error.value.message = e
+    error.value.message = e.message
   } finally {
     loadOrders.value = false
     loadOrders()

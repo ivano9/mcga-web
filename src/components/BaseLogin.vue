@@ -28,9 +28,9 @@ const login = async () => {
             return router.push({ name: 'dashboard' })
         }
         else
-            error.value.message = res
+            error.value.message = res.message
     } catch (e) {
-        error.value.message = e
+        error.value.message = e.message
     } finally {
         loadingButton.value = false
     }
