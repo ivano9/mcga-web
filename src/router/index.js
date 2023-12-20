@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { createAuthServices } from '@/services'
+const authServices = createAuthServices()
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +29,30 @@ const router = createRouter({
       component: () => import("@/views/NotFoundView.vue"),
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (authServices.loggedIn()) {
+      next()
+      return
+    }
+    next('/login')
+  } else {
+    next()
+  }
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => record.meta.guest)) {
+    if (authServices.loggedIn()) {
+      next('/dashboard')
+      return
+    }
+    next()
+  } else {
+    next()
+  }
 })
 
 export default router
